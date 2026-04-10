@@ -83,9 +83,9 @@ pre-commit run --all-files
 
 ## CI and release artifacts
 
-GitHub Actions is configured to target a RHEL 9-compatible userspace:
+GitHub Actions is configured to validate against a RHEL 9-compatible userspace while targeting the RHEL 9.2 deployment host:
 
-- `CI` runs build, test, and pre-commit checks in a Rocky Linux 9 container.
+- `CI` runs build, test, and pre-commit checks in a Rocky Linux 9 container as a RHEL 9-compatible CI environment.
 - `Release Please` watches conventional commits on `master`/`main`, opens a release PR, updates `VERSION`, updates `CHANGELOG.md`, and creates tags/releases.
 - `Release` builds a tarball artifact containing the `herofand` binary and the systemd unit.
 
