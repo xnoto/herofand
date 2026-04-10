@@ -17,31 +17,41 @@ jobs:
       image: quay.io/rockylinux/rockylinux:9
 
     steps:
+      - name: Install git for checkout
+        run: |
+          dnf -y install git
+
       - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Install build dependencies
         run: |
-          dnf -y install gcc git make python3 python3-pip tar gzip
+          cd "$GITHUB_WORKSPACE"
+          dnf -y install gcc make python3 python3-pip tar gzip
 
       - name: Read version
         id: version
         run: |
+          cd "$GITHUB_WORKSPACE"
           version=$(cat VERSION)
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Verify tag matches VERSION
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
+          cd "$GITHUB_WORKSPACE"
           tag="${GITHUB_REF_NAME#v}"
           version="${{ steps.version.outputs.version }}"
           test "$tag" = "$version"
 
       - name: Build and test
-        run: make clean all test
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          make clean all test
 
       - name: Package artifact
         run: |
+          cd "$GITHUB_WORKSPACE"
           version="${{ steps.version.outputs.version }}"
           stage="build/release/herofand-$version-rhel9-x86_64"
           mkdir -p "$stage/bin" "$stage/systemd"
