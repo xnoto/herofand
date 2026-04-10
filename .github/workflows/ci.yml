@@ -27,6 +27,10 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install pre-commit
 
+      - name: Mark workspace as safe for git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Build and test
         run: make clean all test
 
