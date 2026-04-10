@@ -9,7 +9,7 @@ Minimal C daemon for the Hero fan-control use case.
 - predictable systemd deployment
 - responsive polling-based control for the exact Hero host policy
 
-## Target toolchain
+## Runtime target
 
 This project is intentionally tuned for `hero.makeitwork.cloud`:
 
@@ -18,7 +18,20 @@ This project is intentionally tuned for `hero.makeitwork.cloud`:
 - Python 3.11.x for lightweight repo checks
 - C17 source standard
 
-The repo avoids a clang-based workflow because that toolchain is not installed on the target host.
+These runtime details matter for the deployed binary, not for local development tooling.
+
+## Development tooling
+
+Development is expected to happen on a separate Fedora workstation, where richer C tooling is available.
+
+Development-only checks currently use:
+
+- `clang-format`
+- `clang-tidy`
+- `cppcheck`
+- `pre-commit`
+
+These tools are not required to install or run the final package on `hero`.
 
 ## Layout
 
@@ -69,6 +82,13 @@ Do not enable it alongside the existing shell-based `hero-fand.service`; only on
 
 ## Pre-commit
 
+Install local development tools on Fedora:
+
+```sh
+sudo dnf install clang-tools-extra cppcheck
+pre-commit install
+```
+
 Install hooks:
 
 ```sh
@@ -79,6 +99,12 @@ Run all hooks:
 
 ```sh
 pre-commit run --all-files
+```
+
+Run all development checks without pre-commit:
+
+```sh
+make dev-check
 ```
 
 ## CI and release artifacts

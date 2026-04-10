@@ -4,8 +4,7 @@
 
 int herofand_test_config(void);
 
-int herofand_test_config(void)
-{
+int herofand_test_config(void) {
     struct herofand_runtime_config config = herofand_default_config();
 
     assert(herofand_validate_config(&config));

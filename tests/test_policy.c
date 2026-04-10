@@ -5,8 +5,7 @@
 
 int herofand_test_policy(void);
 
-int herofand_test_policy(void)
-{
+int herofand_test_policy(void) {
     const struct herofand_runtime_config config = herofand_default_config();
     struct herofand_channel_state state;
     int applied_tier;

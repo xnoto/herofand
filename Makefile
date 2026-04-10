@@ -6,6 +6,9 @@ VERSION := $(shell cat VERSION)
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
 UNITDIR ?= /etc/systemd/system
+CLANG_FORMAT ?= clang-format
+CLANG_TIDY ?= clang-tidy
+CPPCHECK ?= cppcheck
 
 CSTD := -std=c17
 WARN := -Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion -Wstrict-prototypes \
@@ -33,7 +36,12 @@ TEST_SRC := \
 
 TEST_OBJ := $(patsubst %.c,$(BUILD_DIR)/%.o,$(TEST_SRC))
 
-.PHONY: all clean test format-check debug release print-version install install-bin install-unit
+C_SOURCES := $(SRC) tests/test_main.c tests/test_policy.c tests/test_config.c
+C_HEADERS := include/config.h include/controller.h include/policy.h include/sysfs.h
+C_FILES := $(C_SOURCES) $(C_HEADERS)
+
+.PHONY: all clean test format format-check clang-format-check clang-tidy cppcheck dev-check \
+	debug release print-version install install-bin install-unit
 
 all: $(BIN)
 
@@ -58,11 +66,26 @@ $(BUILD_DIR)/%.o: %.c
 test: $(TEST_BIN)
 	./$(TEST_BIN)
 
+format:
+	$(CLANG_FORMAT) -i $(C_FILES)
+
 print-version:
 	@printf '%s\n' '$(VERSION)'
 
 format-check:
 	python3 scripts/format_check.py include src tests
+
+clang-format-check:
+	$(CLANG_FORMAT) --dry-run --Werror $(C_FILES)
+
+clang-tidy:
+	$(CLANG_TIDY) --quiet $(SRC) -- $(CPPFLAGS) $(CSTD)
+
+cppcheck:
+	$(CPPCHECK) --quiet --error-exitcode=1 --enable=warning,style,performance,portability \
+		--suppress=missingIncludeSystem $(SRC) tests/*.c
+
+dev-check: format-check clang-format-check cppcheck clang-tidy test
 
 clean:
 	rm -rf $(BUILD_DIR)

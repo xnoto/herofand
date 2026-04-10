@@ -16,11 +16,7 @@
 #define HEROFAND_GPU_NAME "amdgpu"
 
 static const char *const herofand_excluded_labels[] = {
-    "AUXTIN1",
-    "AUXTIN2",
-    "PCH_CHIP_CPU_MAX_TEMP",
-    "PCH_CHIP_TEMP",
-    "PCH_CPU_TEMP",
+    "AUXTIN1", "AUXTIN2", "PCH_CHIP_CPU_MAX_TEMP", "PCH_CHIP_TEMP", "PCH_CPU_TEMP",
 };
 
 struct herofand_sensor {
@@ -55,14 +51,12 @@ struct herofand_runtime {
 
 static volatile sig_atomic_t herofand_running = 1;
 
-static void herofand_handle_signal(int signum)
-{
+static void herofand_handle_signal(int signum) {
     (void)signum;
     herofand_running = 0;
 }
 
-static void herofand_free_sensor(struct herofand_sensor *sensor)
-{
+static void herofand_free_sensor(struct herofand_sensor *sensor) {
     if (sensor == NULL) {
         return;
     }
@@ -72,8 +66,7 @@ static void herofand_free_sensor(struct herofand_sensor *sensor)
     free(sensor->hwmon_name);
 }
 
-static void herofand_free_sensor_list(struct herofand_sensor_list *list)
-{
+static void herofand_free_sensor_list(struct herofand_sensor_list *list) {
     size_t i;
 
     if (list == NULL) {
@@ -89,8 +82,7 @@ static void herofand_free_sensor_list(struct herofand_sensor_list *list)
     list->count = 0U;
 }
 
-static void herofand_free_runtime(struct herofand_runtime *runtime)
-{
+static void herofand_free_runtime(struct herofand_runtime *runtime) {
     size_t i;
 
     if (runtime == NULL) {
@@ -108,8 +100,7 @@ static void herofand_free_runtime(struct herofand_runtime *runtime)
     runtime->gpus.count = 0U;
 }
 
-static bool herofand_label_is_excluded(const char *label)
-{
+static bool herofand_label_is_excluded(const char *label) {
     size_t i;
 
     if (label == NULL) {
@@ -125,8 +116,7 @@ static bool herofand_label_is_excluded(const char *label)
     return false;
 }
 
-static char *herofand_strdup_string(const char *text)
-{
+static char *herofand_strdup_string(const char *text) {
     size_t len;
     char *copy;
 
@@ -144,11 +134,8 @@ static char *herofand_strdup_string(const char *text)
     return copy;
 }
 
-static bool herofand_append_sensor(struct herofand_sensor_list *list,
-                                   const char *path,
-                                   const char *label,
-                                   const char *hwmon_name)
-{
+static bool herofand_append_sensor(struct herofand_sensor_list *list, const char *path,
+                                   const char *label, const char *hwmon_name) {
     struct herofand_sensor *next;
 
     if (list == NULL || path == NULL || hwmon_name == NULL) {
@@ -164,9 +151,8 @@ static bool herofand_append_sensor(struct herofand_sensor_list *list,
     list->items[list->count].path = herofand_strdup_string(path);
     list->items[list->count].label = herofand_strdup_string(label != NULL ? label : "(no label)");
     list->items[list->count].hwmon_name = herofand_strdup_string(hwmon_name);
-    if (list->items[list->count].path == NULL
-        || list->items[list->count].label == NULL
-        || list->items[list->count].hwmon_name == NULL) {
+    if (list->items[list->count].path == NULL || list->items[list->count].label == NULL ||
+        list->items[list->count].hwmon_name == NULL) {
         herofand_free_sensor(&list->items[list->count]);
         return false;
     }
@@ -175,8 +161,7 @@ static bool herofand_append_sensor(struct herofand_sensor_list *list,
     return true;
 }
 
-static bool herofand_append_gpu(struct herofand_gpu_list *list, struct herofand_gpu *gpu)
-{
+static bool herofand_append_gpu(struct herofand_gpu_list *list, const struct herofand_gpu *gpu) {
     struct herofand_gpu *next;
 
     if (list == NULL || gpu == NULL) {
@@ -194,8 +179,7 @@ static bool herofand_append_gpu(struct herofand_gpu_list *list, struct herofand_
     return true;
 }
 
-static bool herofand_find_nct(struct herofand_runtime *runtime)
-{
+static bool herofand_find_nct(struct herofand_runtime *runtime) {
     glob_t matches;
     size_t i;
     bool found = false;
@@ -214,8 +198,8 @@ static bool herofand_find_nct(struct herofand_runtime *runtime)
             continue;
         }
 
-        if (herofand_read_string(name_path, buffer, sizeof(buffer))
-            && strcmp(buffer, HEROFAND_NCT_NAME) == 0) {
+        if (herofand_read_string(name_path, buffer, sizeof(buffer)) &&
+            strcmp(buffer, HEROFAND_NCT_NAME) == 0) {
             runtime->nct_path = herofand_strdup_string(matches.gl_pathv[i]);
             found = runtime->nct_path != NULL;
             free(name_path);
@@ -229,8 +213,7 @@ static bool herofand_find_nct(struct herofand_runtime *runtime)
     return found;
 }
 
-static bool herofand_collect_temp_inputs(const char *hwmon_path, glob_t *matches)
-{
+static bool herofand_collect_temp_inputs(const char *hwmon_path, glob_t *matches) {
     char *pattern;
     int result;
 
@@ -250,8 +233,7 @@ static bool herofand_collect_temp_inputs(const char *hwmon_path, glob_t *matches
     return result == 0;
 }
 
-static bool herofand_discover(struct herofand_runtime *runtime)
-{
+static bool herofand_discover(struct herofand_runtime *runtime) {
     glob_t hwmons;
     size_t i;
 
@@ -345,8 +327,7 @@ static bool herofand_discover(struct herofand_runtime *runtime)
                 }
                 memcpy(label_path, temps.gl_pathv[j], temp_len + 1U);
                 if (temp_len >= strlen("_input")) {
-                    memcpy(label_path + temp_len - strlen("_input"),
-                           "_label",
+                    memcpy(label_path + temp_len - strlen("_input"), "_label",
                            strlen("_label") + 1U);
                 }
 
@@ -354,20 +335,16 @@ static bool herofand_discover(struct herofand_runtime *runtime)
                     if (herofand_label_is_excluded(label)) {
                         keep_sensor = false;
                     }
-                    if (keep_sensor
-                        && herofand_read_int(temps.gl_pathv[j], &startup_value)
-                        && startup_value == 0) {
+                    if (keep_sensor && herofand_read_int(temps.gl_pathv[j], &startup_value) &&
+                        startup_value == 0) {
                         keep_sensor = false;
                     }
                 } else {
                     strcpy(label, "(no label)");
                 }
 
-                if (keep_sensor
-                    && !herofand_append_sensor(&runtime->system_sensors,
-                                               temps.gl_pathv[j],
-                                               label,
-                                               hwmon_name)) {
+                if (keep_sensor && !herofand_append_sensor(&runtime->system_sensors,
+                                                           temps.gl_pathv[j], label, hwmon_name)) {
                     globfree(&temps);
                     globfree(&hwmons);
                     return false;
@@ -382,17 +359,14 @@ static bool herofand_discover(struct herofand_runtime *runtime)
     return runtime->system_sensors.count > 0U;
 }
 
-static void herofand_log_discovery(const struct herofand_runtime *runtime)
-{
+static void herofand_log_discovery(const struct herofand_runtime *runtime) {
     size_t i;
     size_t j;
 
     fprintf(stdout, "herofand started: NCT=%s\n", runtime->nct_path);
     fprintf(stdout, "Polling %zu non-GPU sensors:\n", runtime->system_sensors.count);
     for (i = 0; i < runtime->system_sensors.count; ++i) {
-        fprintf(stdout,
-                "  %s [%s / %s]\n",
-                runtime->system_sensors.items[i].path,
+        fprintf(stdout, "  %s [%s / %s]\n", runtime->system_sensors.items[i].path,
                 runtime->system_sensors.items[i].hwmon_name,
                 runtime->system_sensors.items[i].label);
     }
@@ -406,8 +380,7 @@ static void herofand_log_discovery(const struct herofand_runtime *runtime)
     }
 }
 
-static bool herofand_write_nct_pwm(const struct herofand_runtime *runtime, int channel, int value)
-{
+static bool herofand_write_nct_pwm(const struct herofand_runtime *runtime, int channel, int value) {
     char name[32];
     char *path;
     bool ok;
@@ -427,10 +400,8 @@ static bool herofand_write_nct_pwm(const struct herofand_runtime *runtime, int c
     return ok;
 }
 
-static bool herofand_write_nct_enable(const struct herofand_runtime *runtime,
-                                      int channel,
-                                      int value)
-{
+static bool herofand_write_nct_enable(const struct herofand_runtime *runtime, int channel,
+                                      int value) {
     char name[32];
     char *path;
     bool ok;
@@ -450,8 +421,7 @@ static bool herofand_write_nct_enable(const struct herofand_runtime *runtime,
     return ok;
 }
 
-static bool herofand_write_gpu_pwm(const struct herofand_gpu *gpu, int value)
-{
+static bool herofand_write_gpu_pwm(const struct herofand_gpu *gpu, int value) {
     char *path;
     bool ok;
 
@@ -469,8 +439,7 @@ static bool herofand_write_gpu_pwm(const struct herofand_gpu *gpu, int value)
     return ok;
 }
 
-static bool herofand_write_gpu_enable(const struct herofand_gpu *gpu, int value)
-{
+static bool herofand_write_gpu_enable(const struct herofand_gpu *gpu, int value) {
     char *path;
     bool ok;
 
@@ -488,15 +457,14 @@ static bool herofand_write_gpu_enable(const struct herofand_gpu *gpu, int value)
     return ok;
 }
 
-static bool herofand_set_manual_mode(const struct herofand_runtime *runtime)
-{
+static bool herofand_set_manual_mode(const struct herofand_runtime *runtime) {
     size_t i;
 
-    if (!herofand_write_nct_enable(runtime, HEROFAND_CASE_PWM2, 1)
-        || !herofand_write_nct_enable(runtime, HEROFAND_CASE_PWM3, 1)
-        || !herofand_write_nct_enable(runtime, HEROFAND_CASE_PWM4, 1)
-        || !herofand_write_nct_enable(runtime, HEROFAND_PUMP_PWM7, 1)
-        || !herofand_write_nct_pwm(runtime, HEROFAND_PUMP_PWM7, 255)) {
+    if (!herofand_write_nct_enable(runtime, HEROFAND_CASE_PWM2, 1) ||
+        !herofand_write_nct_enable(runtime, HEROFAND_CASE_PWM3, 1) ||
+        !herofand_write_nct_enable(runtime, HEROFAND_CASE_PWM4, 1) ||
+        !herofand_write_nct_enable(runtime, HEROFAND_PUMP_PWM7, 1) ||
+        !herofand_write_nct_pwm(runtime, HEROFAND_PUMP_PWM7, 255)) {
         return false;
     }
 
@@ -509,8 +477,7 @@ static bool herofand_set_manual_mode(const struct herofand_runtime *runtime)
     return true;
 }
 
-static void herofand_cleanup(const struct herofand_runtime *runtime)
-{
+static void herofand_cleanup(const struct herofand_runtime *runtime) {
     size_t i;
 
     if (runtime == NULL) {
@@ -528,8 +495,7 @@ static void herofand_cleanup(const struct herofand_runtime *runtime)
     }
 }
 
-static int herofand_read_sensor_max(const struct herofand_sensor_list *list)
-{
+static int herofand_read_sensor_max(const struct herofand_sensor_list *list) {
     int max = 0;
     size_t i;
 
@@ -551,8 +517,7 @@ static int herofand_read_sensor_max(const struct herofand_sensor_list *list)
     return max;
 }
 
-static long herofand_now_seconds(void)
-{
+static long herofand_now_seconds(void) {
     struct timespec now;
 
     if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
@@ -562,8 +527,7 @@ static long herofand_now_seconds(void)
     return now.tv_sec;
 }
 
-static void herofand_sleep_interval(double seconds)
-{
+static void herofand_sleep_interval(double seconds) {
     struct timespec req;
 
     req.tv_sec = (time_t)seconds;
@@ -573,8 +537,7 @@ static void herofand_sleep_interval(double seconds)
     }
 }
 
-int herofand_run(const struct herofand_runtime_config *config, bool run_once)
-{
+int herofand_run(const struct herofand_runtime_config *config, bool run_once) {
     struct herofand_runtime runtime;
     struct sigaction action;
     int status = EXIT_FAILURE;
@@ -629,33 +592,25 @@ int herofand_run(const struct herofand_runtime_config *config, bool run_once)
             }
 
             gpu_tier = herofand_curve_tier(&config->gpu_curve, gpu_max);
-            if (herofand_channel_state_apply(&runtime.gpus.items[i].state,
-                                             gpu_tier,
-                                             now_seconds,
-                                             config->downshift_delay_seconds,
-                                             &applied_tier)) {
+            if (herofand_channel_state_apply(&runtime.gpus.items[i].state, gpu_tier, now_seconds,
+                                             config->downshift_delay_seconds, &applied_tier)) {
                 (void)herofand_write_gpu_pwm(&runtime.gpus.items[i],
                                              herofand_curve_pwm(&config->gpu_curve, applied_tier));
             }
         }
 
-        if (herofand_channel_state_apply(&runtime.intake_state,
-                                         herofand_curve_tier(&config->intake_curve, max_temp),
-                                         now_seconds,
-                                         config->downshift_delay_seconds,
-                                         &applied_tier)) {
+        if (herofand_channel_state_apply(
+                &runtime.intake_state, herofand_curve_tier(&config->intake_curve, max_temp),
+                now_seconds, config->downshift_delay_seconds, &applied_tier)) {
             int pwm = herofand_curve_pwm(&config->intake_curve, applied_tier);
             (void)herofand_write_nct_pwm(&runtime, HEROFAND_CASE_PWM2, pwm);
             (void)herofand_write_nct_pwm(&runtime, HEROFAND_CASE_PWM3, pwm);
         }
 
-        if (herofand_channel_state_apply(&runtime.exhaust_state,
-                                         herofand_curve_tier(&config->exhaust_curve, max_temp),
-                                         now_seconds,
-                                         config->downshift_delay_seconds,
-                                         &applied_tier)) {
-            (void)herofand_write_nct_pwm(&runtime,
-                                         HEROFAND_CASE_PWM4,
+        if (herofand_channel_state_apply(
+                &runtime.exhaust_state, herofand_curve_tier(&config->exhaust_curve, max_temp),
+                now_seconds, config->downshift_delay_seconds, &applied_tier)) {
+            (void)herofand_write_nct_pwm(&runtime, HEROFAND_CASE_PWM4,
                                          herofand_curve_pwm(&config->exhaust_curve, applied_tier));
         }
 

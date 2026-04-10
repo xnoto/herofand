@@ -17,17 +17,14 @@ static const struct option herofand_options[] = {
     {NULL, 0, NULL, 0},
 };
 
-static void herofand_print_usage(const char *argv0)
-{
+static void herofand_print_usage(const char *argv0) {
     fprintf(stdout,
             "Usage: %s [--once] [--verbose]\n"
             "       %s --version\n",
-            argv0,
-            argv0);
+            argv0, argv0);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     struct herofand_runtime_config config;
     bool run_once = false;
     int option;
@@ -60,11 +57,8 @@ int main(int argc, char **argv)
     }
 
     if (config.verbose_logging) {
-        fprintf(stdout,
-                "herofand %s starting (interval=%.1fs, downshift=%ds)\n",
-                HEROFAND_VERSION,
-                config.interval_seconds,
-                config.downshift_delay_seconds);
+        fprintf(stdout, "herofand %s starting (interval=%.1fs, downshift=%ds)\n", HEROFAND_VERSION,
+                config.interval_seconds, config.downshift_delay_seconds);
     }
 
     return herofand_run(&config, run_once);

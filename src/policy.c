@@ -2,8 +2,7 @@
 
 #include "policy.h"
 
-int herofand_curve_tier(const struct herofand_curve *curve, int temp_mc)
-{
+int herofand_curve_tier(const struct herofand_curve *curve, int temp_mc) {
     if (curve == NULL) {
         return 0;
     }
@@ -23,8 +22,7 @@ int herofand_curve_tier(const struct herofand_curve *curve, int temp_mc)
     return 4;
 }
 
-int herofand_curve_pwm(const struct herofand_curve *curve, int tier)
-{
+int herofand_curve_pwm(const struct herofand_curve *curve, int tier) {
     if (curve == NULL) {
         return 0;
     }
@@ -43,8 +41,7 @@ int herofand_curve_pwm(const struct herofand_curve *curve, int tier)
     }
 }
 
-void herofand_channel_state_init(struct herofand_channel_state *state)
-{
+void herofand_channel_state_init(struct herofand_channel_state *state) {
     if (state == NULL) {
         return;
     }
@@ -54,12 +51,9 @@ void herofand_channel_state_init(struct herofand_channel_state *state)
     state->down_since_seconds = 0;
 }
 
-bool herofand_channel_state_apply(struct herofand_channel_state *state,
-                                  int new_tier,
-                                  long now_seconds,
-                                  int downshift_delay_seconds,
-                                  int *applied_tier)
-{
+bool herofand_channel_state_apply(struct herofand_channel_state *state, int new_tier,
+                                  long now_seconds, int downshift_delay_seconds,
+                                  int *applied_tier) {
     if (state == NULL || applied_tier == NULL) {
         return false;
     }

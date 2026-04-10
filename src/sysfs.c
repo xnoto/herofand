@@ -8,13 +8,11 @@
 
 #include "sysfs.h"
 
-bool herofand_path_exists(const char *path)
-{
+bool herofand_path_exists(const char *path) {
     return path != NULL && access(path, F_OK) == 0;
 }
 
-bool herofand_read_string(const char *path, char *buffer, size_t buffer_size)
-{
+bool herofand_read_string(const char *path, char *buffer, size_t buffer_size) {
     FILE *file;
     size_t len;
 
@@ -43,8 +41,7 @@ bool herofand_read_string(const char *path, char *buffer, size_t buffer_size)
     return true;
 }
 
-bool herofand_read_int(const char *path, int *value)
-{
+bool herofand_read_int(const char *path, int *value) {
     char buffer[64];
     char *end;
     long parsed;
@@ -66,8 +63,7 @@ bool herofand_read_int(const char *path, int *value)
     return true;
 }
 
-bool herofand_write_int(const char *path, int value)
-{
+bool herofand_write_int(const char *path, int value) {
     FILE *file;
 
     if (path == NULL) {
@@ -91,8 +87,7 @@ bool herofand_write_int(const char *path, int value)
     return true;
 }
 
-char *herofand_path_join(const char *left, const char *right)
-{
+char *herofand_path_join(const char *left, const char *right) {
     int written;
     size_t size;
     char *path;

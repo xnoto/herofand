@@ -21,6 +21,24 @@ repos:
         language: system
         pass_filenames: false
 
+      - id: herofand-clang-format-check
+        name: make clang-format-check
+        entry: make clang-format-check
+        language: system
+        pass_filenames: false
+
+      - id: herofand-cppcheck
+        name: make cppcheck
+        entry: make cppcheck
+        language: system
+        pass_filenames: false
+
+      - id: herofand-clang-tidy
+        name: make clang-tidy
+        entry: make clang-tidy
+        language: system
+        pass_filenames: false
+
       - id: herofand-make-test
         name: make test
         entry: make test

@@ -24,7 +24,7 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          dnf -y install gcc make python3 python3-pip
+          dnf -y install gcc make python3 python3-pip clang-tools-extra cppcheck
 
       - name: Install repo checks
         run: |
