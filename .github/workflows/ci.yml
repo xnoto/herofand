@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: quay.io/rockylinux/rockylinux:9
-    defaults:
-      run:
-        working-directory: ${{ github.workspace }}
 
     steps:
       - name: Check out repository
@@ -32,11 +29,17 @@ jobs:
 
       - name: Mark workspace as safe for git
         run: |
+          cd "$GITHUB_WORKSPACE"
           git config --global --add safe.directory '*'
+          pwd
           git status --short
 
       - name: Build and test
-        run: make clean all test
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          make clean all test
 
       - name: Run pre-commit checks
-        run: pre-commit run --all-files
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          pre-commit run --all-files
