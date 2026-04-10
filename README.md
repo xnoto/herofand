@@ -81,6 +81,30 @@ Run all hooks:
 pre-commit run --all-files
 ```
 
+## CI and release artifacts
+
+GitHub Actions is configured to target a RHEL 9-compatible userspace:
+
+- `CI` runs build, test, and pre-commit checks in a Rocky Linux 9 container.
+- `Release Please` watches conventional commits on `master`/`main`, opens a release PR, updates `VERSION`, updates `CHANGELOG.md`, and creates tags/releases.
+- `Release` builds a tarball artifact containing the `herofand` binary and the systemd unit.
+
+Release tags are expected to match `VERSION` and use the form `vX.Y.Z`.
+
+The workflow publishes release artifacts instead of committing binaries back into the repository.
+
+## Automated versioning
+
+Version increments are automated through `release-please`.
+
+- Write commits using the conventional commit format.
+- Merge them to `master`/`main`.
+- `release-please` opens or updates a release PR with the next version.
+- Merging that PR updates `VERSION`, updates `CHANGELOG.md`, and creates the GitHub tag/release.
+- The release workflow then builds and uploads the RHEL 9-compatible tarball artifact.
+
+`VERSION` remains in the repo, but you should not bump it manually for normal releases.
+
 ## Status
 
 This is an implementation-ready project with a working daemon core, build/test flow, and installable systemd unit.
