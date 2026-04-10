@@ -29,7 +29,8 @@ jobs:
 
       - name: Mark workspace as safe for git
         run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory '*'
+          git status --short
 
       - name: Build and test
         run: make clean all test
