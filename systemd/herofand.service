@@ -1,0 +1,12 @@
+[Unit]
+Description=Hero fan control daemon
+After=lm_sensors.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/herofand
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

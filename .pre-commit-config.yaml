@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: herofand-make-format-check
+        name: make format-check
+        entry: make format-check
+        language: system
+        pass_filenames: false
+
+      - id: herofand-make-test
+        name: make test
+        entry: make test
+        language: system
+        pass_filenames: false
