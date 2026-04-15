@@ -44,6 +44,19 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           make clean all test
 
+      - name: Verify RPM builds
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          dnf -y install rpm-build rpmdevtools systemd-rpm-macros
+          version=$(cat VERSION)
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          mkdir -p /tmp/herofand-$version
+          cp -a . /tmp/herofand-$version/
+          rm -rf /tmp/herofand-$version/.git /tmp/herofand-$version/build
+          tar -czf ~/rpmbuild/SOURCES/herofand-$version.tar.gz -C /tmp herofand-$version
+          sed "s/^Version:.*/Version:        $version/" herofand.spec > ~/rpmbuild/SPECS/herofand.spec
+          rpmbuild -bb ~/rpmbuild/SPECS/herofand.spec
+
       - name: Run pre-commit checks
         run: |
           cd "$GITHUB_WORKSPACE"

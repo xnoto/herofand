@@ -29,6 +29,11 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           dnf -y install gcc make python3 python3-pip tar gzip
 
+      - name: Install packaging tools
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          dnf -y install rpm-build rpmdevtools systemd-rpm-macros
+
       - name: Read version
         id: version
         run: |
@@ -49,7 +54,21 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           make clean all test
 
-      - name: Package artifact
+      - name: Build RPM
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          version="${{ steps.version.outputs.version }}"
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          mkdir -p /tmp/herofand-$version
+          cp -a . /tmp/herofand-$version/
+          rm -rf /tmp/herofand-$version/.git /tmp/herofand-$version/build
+          tar -czf ~/rpmbuild/SOURCES/herofand-$version.tar.gz -C /tmp herofand-$version
+          sed "s/^Version:.*/Version:        $version/" herofand.spec > ~/rpmbuild/SPECS/herofand.spec
+          rpmbuild -bb ~/rpmbuild/SPECS/herofand.spec
+          mkdir -p build
+          cp ~/rpmbuild/RPMS/x86_64/herofand-${version}-1.el9.x86_64.rpm build/
+
+      - name: Package tarball
         run: |
           cd "$GITHUB_WORKSPACE"
           version="${{ steps.version.outputs.version }}"
@@ -60,15 +79,19 @@ jobs:
           cp README.md VERSION "$stage/"
           tar -C build/release -czf "build/herofand-$version-rhel9-x86_64.tar.gz" "herofand-$version-rhel9-x86_64"
 
-      - name: Upload workflow artifact
+      - name: Upload workflow artifacts
         uses: actions/upload-artifact@v4
         with:
           name: herofand-${{ steps.version.outputs.version }}-rhel9-x86_64
-          path: build/herofand-${{ steps.version.outputs.version }}-rhel9-x86_64.tar.gz
+          path: |
+            build/herofand-${{ steps.version.outputs.version }}-rhel9-x86_64.tar.gz
+            build/herofand-${{ steps.version.outputs.version }}-1.el9.x86_64.rpm
 
-      - name: Publish GitHub release asset
+      - name: Publish GitHub release assets
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: build/herofand-${{ steps.version.outputs.version }}-rhel9-x86_64.tar.gz
+          files: |
+            build/herofand-${{ steps.version.outputs.version }}-rhel9-x86_64.tar.gz
+            build/herofand-${{ steps.version.outputs.version }}-1.el9.x86_64.rpm
           generate_release_notes: true
