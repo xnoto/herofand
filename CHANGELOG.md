@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/xnoto/herofand/compare/v0.1.1...v0.2.0) (2026-04-15)
+
+
+### Features
+
+* add RPM packaging and CI verification ([#4](https://github.com/xnoto/herofand/issues/4)) ([142114e](https://github.com/xnoto/herofand/commit/142114e976d2cc35b5334f23413285197f6baabf))
+
 ## [0.1.1](https://github.com/xnoto/herofand/compare/v0.1.0...v0.1.1) (2026-04-10)
 
 
