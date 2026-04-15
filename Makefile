@@ -5,7 +5,7 @@ TEST_BIN := $(BUILD_DIR)/test_config
 VERSION := $(shell cat VERSION)
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
-UNITDIR ?= /etc/systemd/system
+UNITDIR ?= $(PREFIX)/lib/systemd/system
 CLANG_FORMAT ?= clang-format
 CLANG_TIDY ?= clang-tidy
 CPPCHECK ?= cppcheck
@@ -98,4 +98,5 @@ install-bin: $(BIN)
 
 install-unit:
 	install -d "$(DESTDIR)$(UNITDIR)"
-	install -m 0644 systemd/herofand.service "$(DESTDIR)$(UNITDIR)/herofand.service"
+	sed 's|/usr/local/bin/herofand|$(BINDIR)/herofand|' systemd/herofand.service > "$(DESTDIR)$(UNITDIR)/herofand.service"
+	chmod 0644 "$(DESTDIR)$(UNITDIR)/herofand.service"

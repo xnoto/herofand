@@ -12,7 +12,7 @@ jobs:
     name: Build, test, and lint (RHEL 9-compatible)
     runs-on: ubuntu-latest
     container:
-      image: quay.io/rockylinux/rockylinux:9
+      image: registry.access.redhat.com/ubi9/ubi:9.2
 
     steps:
       - name: Install git for checkout
@@ -24,7 +24,7 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          dnf -y install epel-release
+          dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
           dnf -y install gcc make python3 python3-pip clang-tools-extra cppcheck
 
       - name: Install repo checks
@@ -43,6 +43,19 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"
           make clean all test
+
+      - name: Verify RPM builds
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          dnf -y install rpm-build rpmdevtools systemd-rpm-macros
+          version=$(cat VERSION)
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          mkdir -p /tmp/herofand-$version
+          cp -a . /tmp/herofand-$version/
+          rm -rf /tmp/herofand-$version/.git /tmp/herofand-$version/build
+          tar -czf ~/rpmbuild/SOURCES/herofand-$version.tar.gz -C /tmp herofand-$version
+          sed "s/^Version:.*/Version:        $version/" herofand.spec > ~/rpmbuild/SPECS/herofand.spec
+          rpmbuild -bb ~/rpmbuild/SPECS/herofand.spec
 
       - name: Run pre-commit checks
         run: |
