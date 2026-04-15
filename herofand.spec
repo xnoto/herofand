@@ -2,6 +2,7 @@ Name:           herofand
 Version:        %{version}
 Release:        1%{?dist}
 Summary:        Fan controller daemon for RHEL servers
+%global debug_package %{nil}
 License:        MIT
 URL:            https://github.com/xnoto/herofand
 Source0:        %{name}-%{version}.tar.gz
@@ -30,5 +31,5 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix}
 %doc README.md
 
 %changelog
-* Thu Apr 10 2026 github-actions <41898282+github-actions[bot]@users.noreply.github.com> - 0.1.1-1
+* Fri Apr 10 2026 github-actions <41898282+github-actions[bot]@users.noreply.github.com> - 0.1.1-1
 - Initial RPM packaging
