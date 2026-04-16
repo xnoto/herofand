@@ -4,6 +4,7 @@
   "packages": {
     ".": {
       "release-type": "simple",
+      "version-file": "VERSION",
       "include-v-in-tag": true,
       "changelog-path": "CHANGELOG.md",
       "extra-files": [

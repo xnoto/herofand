@@ -39,7 +39,7 @@ jobs:
         id: version
         run: |
           cd "$GITHUB_WORKSPACE"
-          version=$(cat VERSION)
+          version=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["."])' < .release-please-manifest.json)
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Verify tag matches VERSION
