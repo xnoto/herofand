@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/xnoto/herofand/compare/v0.2.0...v0.2.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* sync VERSION with release-please and make tag verification dynamic ([c8bc9ad](https://github.com/xnoto/herofand/commit/c8bc9ad42126aa205e5495088c382707f6a5cd23))
+
 ## [0.2.0](https://github.com/xnoto/herofand/compare/v0.1.1...v0.2.0) (2026-04-15)
 
 
