@@ -34,6 +34,16 @@ static bool herofand_curve_is_valid(const struct herofand_curve *curve) {
         return false;
     }
 
+    if (curve->idle_dither_min_pwm < 0 || curve->idle_dither_max_pwm > 255) {
+        return false;
+    }
+    if (curve->idle_dither_min_pwm > curve->idle_dither_max_pwm) {
+        return false;
+    }
+    if (curve->idle_dither_period_seconds < 0 || curve->idle_dither_dwell_seconds < 0) {
+        return false;
+    }
+
     return true;
 }
 
@@ -43,11 +53,11 @@ struct herofand_runtime_config herofand_default_config(void) {
         .downshift_delay_seconds = 7,
         .intake_curve =
             {
-                .idle_temp_mc = 45000,
-                .low_temp_mc = 55000,
-                .med_temp_mc = 65000,
-                .high_temp_mc = 70000,
-                .max_temp_mc = 75000,
+                .idle_temp_mc = 68000,
+                .low_temp_mc = 76000,
+                .med_temp_mc = 82000,
+                .high_temp_mc = 88000,
+                .max_temp_mc = 88000,
                 .pwm_idle = 0,
                 .pwm_low = 51,
                 .pwm_med = 128,
@@ -56,11 +66,11 @@ struct herofand_runtime_config herofand_default_config(void) {
             },
         .exhaust_curve =
             {
-                .idle_temp_mc = 45000,
-                .low_temp_mc = 60000,
-                .med_temp_mc = 70000,
-                .high_temp_mc = 75000,
-                .max_temp_mc = 75000,
+                .idle_temp_mc = 66000,
+                .low_temp_mc = 74000,
+                .med_temp_mc = 80000,
+                .high_temp_mc = 85000,
+                .max_temp_mc = 85000,
                 .pwm_idle = 0,
                 .pwm_low = 50,
                 .pwm_med = 132,
@@ -69,16 +79,20 @@ struct herofand_runtime_config herofand_default_config(void) {
             },
         .gpu_curve =
             {
-                .idle_temp_mc = 55000,
-                .low_temp_mc = 65000,
-                .med_temp_mc = 69000,
-                .high_temp_mc = 74000,
-                .max_temp_mc = 74000,
+                .idle_temp_mc = 70000,
+                .low_temp_mc = 80000,
+                .med_temp_mc = 86000,
+                .high_temp_mc = 92000,
+                .max_temp_mc = 92000,
                 .pwm_idle = 0,
                 .pwm_low = 51,
                 .pwm_med = 128,
                 .pwm_high = 230,
                 .pwm_max = 255,
+                .idle_dither_min_pwm = 0,
+                .idle_dither_max_pwm = 40,
+                .idle_dither_period_seconds = 120,
+                .idle_dither_dwell_seconds = 30,
             },
         .verbose_logging = false,
     };

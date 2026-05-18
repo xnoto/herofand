@@ -294,7 +294,26 @@ static bool herofand_discover(struct herofand_runtime *runtime) {
 
             herofand_channel_state_init(&gpu.state);
             for (j = 0; j < temps.gl_pathc; ++j) {
-                if (!herofand_append_sensor(&gpu.sensors, temps.gl_pathv[j], NULL, hwmon_name)) {
+                char label_path[4096];
+                char label[128];
+                size_t temp_len;
+
+                temp_len = strlen(temps.gl_pathv[j]);
+                if (temp_len + 1U >= sizeof(label_path)) {
+                    continue;
+                }
+                memcpy(label_path, temps.gl_pathv[j], temp_len + 1U);
+                if (temp_len >= strlen("_input")) {
+                    memcpy(label_path + temp_len - strlen("_input"), "_label",
+                           strlen("_label") + 1U);
+                }
+
+                if (!herofand_read_string(label_path, label, sizeof(label)) ||
+                    strcmp(label, "edge") != 0) {
+                    continue;
+                }
+
+                if (!herofand_append_sensor(&gpu.sensors, temps.gl_pathv[j], label, hwmon_name)) {
                     free(gpu.hwmon_path);
                     herofand_free_sensor_list(&gpu.sensors);
                     globfree(&temps);
@@ -583,17 +602,26 @@ int herofand_run(const struct herofand_runtime_config *config, bool run_once) {
         max_temp = herofand_read_sensor_max(&runtime.system_sensors);
 
         for (i = 0; i < runtime.gpus.count; ++i) {
+            struct herofand_channel_state *gstate;
             int gpu_max;
             int gpu_tier;
+            bool changed;
 
+            gstate = &runtime.gpus.items[i].state;
             gpu_max = herofand_read_sensor_max(&runtime.gpus.items[i].sensors);
             if (gpu_max > max_temp) {
                 max_temp = gpu_max;
             }
 
             gpu_tier = herofand_curve_tier(&config->gpu_curve, gpu_max);
-            if (herofand_channel_state_apply(&runtime.gpus.items[i].state, gpu_tier, now_seconds,
-                                             config->downshift_delay_seconds, &applied_tier)) {
+            changed = herofand_channel_state_apply(gstate, gpu_tier, now_seconds,
+                                                   config->downshift_delay_seconds, &applied_tier);
+
+            if (gstate->last_tier == 0 && config->gpu_curve.idle_dither_period_seconds > 0) {
+                long dwell = now_seconds - gstate->idle_entered_seconds;
+                (void)herofand_write_gpu_pwm(&runtime.gpus.items[i],
+                                             herofand_curve_idle_pwm(&config->gpu_curve, dwell));
+            } else if (changed) {
                 (void)herofand_write_gpu_pwm(&runtime.gpus.items[i],
                                              herofand_curve_pwm(&config->gpu_curve, applied_tier));
             }

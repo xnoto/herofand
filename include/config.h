@@ -22,6 +22,10 @@ struct herofand_curve {
     int pwm_med;
     int pwm_high;
     int pwm_max;
+    int idle_dither_min_pwm;
+    int idle_dither_max_pwm;
+    int idle_dither_period_seconds;
+    int idle_dither_dwell_seconds;
 };
 
 struct herofand_runtime_config {
