@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/xnoto/herofand/compare/v0.2.1...v0.3.0) (2026-05-18)
+
+
+### Features
+
+* silence GPU fans with idle-tier dither and tuned curves ([#9](https://github.com/xnoto/herofand/issues/9)) ([dd0a42c](https://github.com/xnoto/herofand/commit/dd0a42cbf9312cc6521ecac9ffec789cd6dd7f7a))
+
 ## [0.2.1](https://github.com/xnoto/herofand/compare/v0.2.0...v0.2.1) (2026-04-16)
 
 
