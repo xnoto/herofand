@@ -20,5 +20,9 @@ int herofand_test_config(void) {
     config.intake_curve.low_temp_mc = 44000;
     assert(!herofand_validate_config(&config));
 
+    config = herofand_default_config();
+    config.gpu_idle_dither_index = -2;
+    assert(!herofand_validate_config(&config));
+
     return 0;
 }

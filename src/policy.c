@@ -41,40 +41,6 @@ int herofand_curve_pwm(const struct herofand_curve *curve, int tier) {
     }
 }
 
-int herofand_curve_idle_pwm(const struct herofand_curve *curve, long idle_dwell_seconds) {
-    long period;
-    long half;
-    long t;
-    int range;
-    int offset;
-
-    if (curve == NULL) {
-        return 0;
-    }
-
-    if (curve->idle_dither_period_seconds <= 0 ||
-        idle_dwell_seconds < (long)curve->idle_dither_dwell_seconds) {
-        return curve->pwm_idle;
-    }
-
-    period = (long)curve->idle_dither_period_seconds;
-    half = period / 2;
-    if (half <= 0) {
-        return curve->pwm_idle;
-    }
-
-    t = (idle_dwell_seconds - (long)curve->idle_dither_dwell_seconds) % period;
-    range = curve->idle_dither_max_pwm - curve->idle_dither_min_pwm;
-
-    if (t < half) {
-        offset = (int)((t * (long)range) / half);
-    } else {
-        offset = (int)(((period - t) * (long)range) / (period - half));
-    }
-
-    return curve->idle_dither_min_pwm + offset;
-}
-
 void herofand_channel_state_init(struct herofand_channel_state *state) {
     if (state == NULL) {
         return;
@@ -84,6 +50,8 @@ void herofand_channel_state_init(struct herofand_channel_state *state) {
     state->down_target = -1;
     state->down_since_seconds = 0;
     state->idle_entered_seconds = 0;
+    state->idle_dither_next_seconds = 0;
+    state->idle_pwm = -1;
 }
 
 bool herofand_channel_state_apply(struct herofand_channel_state *state, int new_tier,
@@ -122,6 +90,11 @@ bool herofand_channel_state_apply(struct herofand_channel_state *state, int new_
 
     if (changed && state->last_tier == 0 && prev_tier != 0) {
         state->idle_entered_seconds = now_seconds;
+        state->idle_dither_next_seconds = 0;
+        state->idle_pwm = -1;
+    } else if (changed && state->last_tier != 0) {
+        state->idle_dither_next_seconds = 0;
+        state->idle_pwm = -1;
     }
 
     return changed;

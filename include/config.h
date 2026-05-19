@@ -31,6 +31,7 @@ struct herofand_curve {
 struct herofand_runtime_config {
     double interval_seconds;
     int downshift_delay_seconds;
+    int gpu_idle_dither_index;
     struct herofand_curve intake_curve;
     struct herofand_curve exhaust_curve;
     struct herofand_curve gpu_curve;

@@ -135,6 +135,10 @@ Version increments are automated through `release-please`.
 
 This is an implementation-ready project with a working daemon core, build/test flow, and installable systemd unit.
 
+## Hero GPU fan resonance probe
+
+Earlier notes that identified GPU0/card0 as the noisy device were incorrect. The deployed default policy treats `card1`/GPU1 as the resonance suspect. GPU0 keeps a steady idle PWM while GPU1 randomly chooses an idle PWM between 0 and 160, holds it for a random 30-180 seconds, then chooses another value so the noisy speed band can be identified by ear. On `hero`, GPU1 maps to the second Radeon VII (`10:00.0`, `/sys/class/hwmon/hwmon1`).
+
 ## Versioning
 
 The project uses semantic versioning, starting from the value in `VERSION`.
