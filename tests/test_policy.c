@@ -36,21 +36,20 @@ int herofand_test_policy(void) {
 
     {
         struct herofand_curve dither = {0};
-        dither.pwm_idle = 0;
+        dither.pwm_idle = 32;
         dither.idle_dither_min_pwm = 0;
-        dither.idle_dither_max_pwm = 40;
-        dither.idle_dither_period_seconds = 120;
+        dither.idle_dither_max_pwm = 160;
+        dither.idle_dither_period_seconds = 180;
         dither.idle_dither_dwell_seconds = 30;
 
-        assert(herofand_curve_idle_pwm(&dither, 0) == 0);
-        assert(herofand_curve_idle_pwm(&dither, 29) == 0);
+        assert(herofand_curve_idle_pwm(&dither, 0) == 32);
+        assert(herofand_curve_idle_pwm(&dither, 29) == 32);
         assert(herofand_curve_idle_pwm(&dither, 30) == 0);
-        assert(herofand_curve_idle_pwm(&dither, 60) == 20);
-        assert(herofand_curve_idle_pwm(&dither, 90) == 40);
-        assert(herofand_curve_idle_pwm(&dither, 120) == 20);
-        assert(herofand_curve_idle_pwm(&dither, 150) == 0);
-        assert(herofand_curve_idle_pwm(&dither, 210) == 40);
-        assert(herofand_curve_idle_pwm(&dither, 240) == 20);
+        assert(herofand_curve_idle_pwm(&dither, 75) == 80);
+        assert(herofand_curve_idle_pwm(&dither, 120) == 160);
+        assert(herofand_curve_idle_pwm(&dither, 165) == 80);
+        assert(herofand_curve_idle_pwm(&dither, 210) == 0);
+        assert(herofand_curve_idle_pwm(&dither, 300) == 160);
     }
 
     {

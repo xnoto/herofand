@@ -606,6 +606,7 @@ int herofand_run(const struct herofand_runtime_config *config, bool run_once) {
             int gpu_max;
             int gpu_tier;
             bool changed;
+            bool dither_idle;
 
             gstate = &runtime.gpus.items[i].state;
             gpu_max = herofand_read_sensor_max(&runtime.gpus.items[i].sensors);
@@ -616,8 +617,11 @@ int herofand_run(const struct herofand_runtime_config *config, bool run_once) {
             gpu_tier = herofand_curve_tier(&config->gpu_curve, gpu_max);
             changed = herofand_channel_state_apply(gstate, gpu_tier, now_seconds,
                                                    config->downshift_delay_seconds, &applied_tier);
+            dither_idle =
+                gstate->last_tier == 0 && config->gpu_curve.idle_dither_period_seconds > 0 &&
+                (config->gpu_idle_dither_index < 0 || (size_t)config->gpu_idle_dither_index == i);
 
-            if (gstate->last_tier == 0 && config->gpu_curve.idle_dither_period_seconds > 0) {
+            if (dither_idle) {
                 long dwell = now_seconds - gstate->idle_entered_seconds;
                 (void)herofand_write_gpu_pwm(&runtime.gpus.items[i],
                                              herofand_curve_idle_pwm(&config->gpu_curve, dwell));
