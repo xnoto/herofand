@@ -546,6 +546,17 @@ static long herofand_now_seconds(void) {
     return now.tv_sec;
 }
 
+static int herofand_random_int(int min_value, int max_value) {
+    int range;
+
+    if (max_value <= min_value) {
+        return min_value;
+    }
+
+    range = max_value - min_value + 1;
+    return min_value + (rand() % range);
+}
+
 static void herofand_sleep_interval(double seconds) {
     struct timespec req;
 
@@ -571,6 +582,7 @@ int herofand_run(const struct herofand_runtime_config *config, bool run_once) {
     herofand_channel_state_init(&runtime.intake_state);
     herofand_channel_state_init(&runtime.exhaust_state);
     herofand_running = 1;
+    srand((unsigned int)herofand_now_seconds() ^ (unsigned int)getpid());
 
     action.sa_handler = herofand_handle_signal;
     sigemptyset(&action.sa_mask);
@@ -623,8 +635,26 @@ int herofand_run(const struct herofand_runtime_config *config, bool run_once) {
 
             if (dither_idle) {
                 long dwell = now_seconds - gstate->idle_entered_seconds;
-                (void)herofand_write_gpu_pwm(&runtime.gpus.items[i],
-                                             herofand_curve_idle_pwm(&config->gpu_curve, dwell));
+                if (dwell < (long)config->gpu_curve.idle_dither_dwell_seconds) {
+                    if (gstate->idle_pwm != config->gpu_curve.pwm_idle) {
+                        gstate->idle_pwm = config->gpu_curve.pwm_idle;
+                        (void)herofand_write_gpu_pwm(&runtime.gpus.items[i], gstate->idle_pwm);
+                    }
+                } else if (gstate->idle_pwm < 0 ||
+                           now_seconds >= gstate->idle_dither_next_seconds) {
+                    int interval_min = config->gpu_curve.idle_dither_dwell_seconds;
+                    int interval_max = config->gpu_curve.idle_dither_period_seconds;
+                    int interval;
+
+                    if (interval_max < interval_min) {
+                        interval_max = interval_min;
+                    }
+                    interval = herofand_random_int(interval_min, interval_max);
+                    gstate->idle_pwm = herofand_random_int(config->gpu_curve.idle_dither_min_pwm,
+                                                           config->gpu_curve.idle_dither_max_pwm);
+                    gstate->idle_dither_next_seconds = now_seconds + (long)interval;
+                    (void)herofand_write_gpu_pwm(&runtime.gpus.items[i], gstate->idle_pwm);
+                }
             } else if (changed) {
                 (void)herofand_write_gpu_pwm(&runtime.gpus.items[i],
                                              herofand_curve_pwm(&config->gpu_curve, applied_tier));

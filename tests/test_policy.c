@@ -28,41 +28,24 @@ int herofand_test_policy(void) {
     assert(applied_tier == 3);
 
     {
-        struct herofand_curve disabled = {0};
-        disabled.pwm_idle = 0;
-        disabled.idle_dither_period_seconds = 0;
-        assert(herofand_curve_idle_pwm(&disabled, 9999) == 0);
-    }
-
-    {
-        struct herofand_curve dither = {0};
-        dither.pwm_idle = 32;
-        dither.idle_dither_min_pwm = 0;
-        dither.idle_dither_max_pwm = 160;
-        dither.idle_dither_period_seconds = 180;
-        dither.idle_dither_dwell_seconds = 30;
-
-        assert(herofand_curve_idle_pwm(&dither, 0) == 32);
-        assert(herofand_curve_idle_pwm(&dither, 29) == 32);
-        assert(herofand_curve_idle_pwm(&dither, 30) == 0);
-        assert(herofand_curve_idle_pwm(&dither, 75) == 80);
-        assert(herofand_curve_idle_pwm(&dither, 120) == 160);
-        assert(herofand_curve_idle_pwm(&dither, 165) == 80);
-        assert(herofand_curve_idle_pwm(&dither, 210) == 0);
-        assert(herofand_curve_idle_pwm(&dither, 300) == 160);
-    }
-
-    {
         struct herofand_channel_state idle_state;
         herofand_channel_state_init(&idle_state);
         assert(idle_state.idle_entered_seconds == 0);
+        assert(idle_state.idle_dither_next_seconds == 0);
+        assert(idle_state.idle_pwm == -1);
 
         assert(herofand_channel_state_apply(&idle_state, 0, 500, 7, &applied_tier));
         assert(applied_tier == 0);
         assert(idle_state.idle_entered_seconds == 500);
+        assert(idle_state.idle_pwm == -1);
+
+        idle_state.idle_pwm = 123;
+        idle_state.idle_dither_next_seconds = 555;
 
         assert(herofand_channel_state_apply(&idle_state, 2, 600, 7, &applied_tier));
         assert(idle_state.last_tier == 2);
+        assert(idle_state.idle_pwm == -1);
+        assert(idle_state.idle_dither_next_seconds == 0);
 
         assert(!herofand_channel_state_apply(&idle_state, 0, 700, 7, &applied_tier));
         assert(herofand_channel_state_apply(&idle_state, 0, 707, 7, &applied_tier));

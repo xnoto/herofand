@@ -137,7 +137,7 @@ This is an implementation-ready project with a working daemon core, build/test f
 
 ## Hero GPU fan resonance probe
 
-The deployed default policy treats `card1`/GPU1 as the resonance suspect. GPU0 keeps a steady idle PWM while GPU1 sweeps a wide idle PWM range after a short dwell so the noisy speed band can be identified by ear. On `hero`, GPU1 maps to the second Radeon VII (`10:00.0`, `/sys/class/hwmon/hwmon1`).
+The deployed default policy treats `card1`/GPU1 as the resonance suspect. GPU0 keeps a steady idle PWM while GPU1 randomly chooses an idle PWM between 0 and 160, holds it for a random 30-180 seconds, then chooses another value so the noisy speed band can be identified by ear. On `hero`, GPU1 maps to the second Radeon VII (`10:00.0`, `/sys/class/hwmon/hwmon1`).
 
 ## Versioning
 
