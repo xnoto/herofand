@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/xnoto/herofand/compare/v0.4.0...v0.5.0) (2026-05-26)
+
+
+### Features
+
+* restore aggressive original fan curves from efd7fe1 ([#14](https://github.com/xnoto/herofand/issues/14)) ([21f494e](https://github.com/xnoto/herofand/commit/21f494e84cb2f90519e37f46f51e1eeee76dec55))
+
 ## [0.4.0](https://github.com/xnoto/herofand/compare/v0.3.0...v0.4.0) (2026-05-26)
 
 
