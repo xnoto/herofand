@@ -16,8 +16,8 @@
 #define HEROFAND_GPU_NAME "amdgpu"
 
 static const char *const herofand_excluded_labels[] = {
-    "AUXTIN1",      "AUXTIN2", "PCH_CHIP_CPU_MAX_TEMP", "PCH_CHIP_TEMP", "PCH_CPU_TEMP",
-    "T_Sensor",     "Water_In", "Water_Out",
+    "AUXTIN1",  "AUXTIN2",   "PCH_CHIP_CPU_MAX_TEMP", "PCH_CHIP_TEMP", "PCH_CPU_TEMP", "T_Sensor",
+    "Water_In", "Water_Out",
 };
 
 struct herofand_sensor {
