@@ -43,11 +43,11 @@ struct herofand_runtime_config herofand_default_config(void) {
         .downshift_delay_seconds = 7,
         .intake_curve =
             {
-                .idle_temp_mc = 45000,
-                .low_temp_mc = 55000,
-                .med_temp_mc = 65000,
-                .high_temp_mc = 70000,
-                .max_temp_mc = 75000,
+                .idle_temp_mc = 50000,
+                .low_temp_mc = 65000,
+                .med_temp_mc = 75000,
+                .high_temp_mc = 85000,
+                .max_temp_mc = 90000,
                 .pwm_idle = 0,
                 .pwm_low = 51,
                 .pwm_med = 128,
@@ -56,11 +56,11 @@ struct herofand_runtime_config herofand_default_config(void) {
             },
         .exhaust_curve =
             {
-                .idle_temp_mc = 45000,
-                .low_temp_mc = 60000,
-                .med_temp_mc = 70000,
-                .high_temp_mc = 75000,
-                .max_temp_mc = 75000,
+                .idle_temp_mc = 70000,
+                .low_temp_mc = 80000,
+                .med_temp_mc = 86000,
+                .high_temp_mc = 90000,
+                .max_temp_mc = 92000,
                 .pwm_idle = 0,
                 .pwm_low = 50,
                 .pwm_med = 132,
