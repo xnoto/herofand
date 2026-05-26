@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/xnoto/herofand/compare/v0.5.0...v0.6.0) (2026-05-26)
+
+
+### Features
+
+* exclude known-invalid sensors + order after modules-load ([#16](https://github.com/xnoto/herofand/issues/16)) ([7ddb14c](https://github.com/xnoto/herofand/commit/7ddb14c6b73cf7c70d5b370d663da8ade49d0dfd))
+
 ## [0.5.0](https://github.com/xnoto/herofand/compare/v0.4.0...v0.5.0) (2026-05-26)
 
 
