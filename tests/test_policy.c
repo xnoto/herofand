@@ -10,9 +10,9 @@ int herofand_test_policy(void) {
     struct herofand_channel_state state;
     int applied_tier;
 
-    assert(herofand_curve_tier(&config.intake_curve, 60000) == 0);
-    assert(herofand_curve_tier(&config.intake_curve, 72000) == 1);
-    assert(herofand_curve_tier(&config.intake_curve, 85000) == 3);
+    assert(herofand_curve_tier(&config.intake_curve, 40000) == 0);
+    assert(herofand_curve_tier(&config.intake_curve, 50000) == 1);
+    assert(herofand_curve_tier(&config.intake_curve, 68000) == 3);
     assert(herofand_curve_pwm(&config.gpu_curve, 4) == 255);
 
     herofand_channel_state_init(&state);
