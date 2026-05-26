@@ -56,9 +56,9 @@ struct herofand_runtime_config herofand_default_config(void) {
             },
         .exhaust_curve =
             {
-                .idle_temp_mc = 66000,
-                .low_temp_mc = 74000,
-                .med_temp_mc = 80000,
+                .idle_temp_mc = 70000,
+                .low_temp_mc = 80000,
+                .med_temp_mc = 85000,
                 .high_temp_mc = 85000,
                 .max_temp_mc = 85000,
                 .pwm_idle = 0,
