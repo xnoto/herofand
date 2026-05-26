@@ -16,7 +16,8 @@
 #define HEROFAND_GPU_NAME "amdgpu"
 
 static const char *const herofand_excluded_labels[] = {
-    "AUXTIN1", "AUXTIN2", "PCH_CHIP_CPU_MAX_TEMP", "PCH_CHIP_TEMP", "PCH_CPU_TEMP",
+    "AUXTIN1",      "AUXTIN2", "PCH_CHIP_CPU_MAX_TEMP", "PCH_CHIP_TEMP", "PCH_CPU_TEMP",
+    "T_Sensor",     "Water_In", "Water_Out",
 };
 
 struct herofand_sensor {
@@ -355,7 +356,7 @@ static bool herofand_discover(struct herofand_runtime *runtime) {
                         keep_sensor = false;
                     }
                     if (keep_sensor && herofand_read_int(temps.gl_pathv[j], &startup_value) &&
-                        startup_value == 0) {
+                        startup_value <= 0) {
                         keep_sensor = false;
                     }
                 } else {
@@ -525,7 +526,7 @@ static int herofand_read_sensor_max(const struct herofand_sensor_list *list) {
     for (i = 0; i < list->count; ++i) {
         int value;
 
-        if (!herofand_read_int(list->items[i].path, &value) || value == 0) {
+        if (!herofand_read_int(list->items[i].path, &value) || value <= 0) {
             continue;
         }
         if (value > max) {
