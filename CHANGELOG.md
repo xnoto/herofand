@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/xnoto/herofand/compare/v0.3.0...v0.4.0) (2026-05-26)
+
+
+### Features
+
+* remove GPU idle dither and raise exhaust curve ([#12](https://github.com/xnoto/herofand/issues/12)) ([75fe95f](https://github.com/xnoto/herofand/commit/75fe95fd87321ca4dcbd74931396a6e9e6e28ac6))
+
 ## [0.3.0](https://github.com/xnoto/herofand/compare/v0.2.1...v0.3.0) (2026-05-18)
 
 
