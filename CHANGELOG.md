@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/xnoto/herofand/compare/v0.6.0...v0.7.0) (2026-05-26)
+
+
+### Features
+
+* asymmetric retune — quieter exhaust, intake does most of the work ([#18](https://github.com/xnoto/herofand/issues/18)) ([351708f](https://github.com/xnoto/herofand/commit/351708feaf34866818da45ce336adeb5c263580f))
+
 ## [0.6.0](https://github.com/xnoto/herofand/compare/v0.5.0...v0.6.0) (2026-05-26)
 
 
