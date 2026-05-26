@@ -34,16 +34,6 @@ static bool herofand_curve_is_valid(const struct herofand_curve *curve) {
         return false;
     }
 
-    if (curve->idle_dither_min_pwm < 0 || curve->idle_dither_max_pwm > 255) {
-        return false;
-    }
-    if (curve->idle_dither_min_pwm > curve->idle_dither_max_pwm) {
-        return false;
-    }
-    if (curve->idle_dither_period_seconds < 0 || curve->idle_dither_dwell_seconds < 0) {
-        return false;
-    }
-
     return true;
 }
 
@@ -51,7 +41,6 @@ struct herofand_runtime_config herofand_default_config(void) {
     return (struct herofand_runtime_config){
         .interval_seconds = 1.0,
         .downshift_delay_seconds = 7,
-        .gpu_idle_dither_index = 1,
         .intake_curve =
             {
                 .idle_temp_mc = 68000,
@@ -67,9 +56,9 @@ struct herofand_runtime_config herofand_default_config(void) {
             },
         .exhaust_curve =
             {
-                .idle_temp_mc = 66000,
-                .low_temp_mc = 74000,
-                .med_temp_mc = 80000,
+                .idle_temp_mc = 70000,
+                .low_temp_mc = 80000,
+                .med_temp_mc = 85000,
                 .high_temp_mc = 85000,
                 .max_temp_mc = 85000,
                 .pwm_idle = 0,
@@ -85,15 +74,11 @@ struct herofand_runtime_config herofand_default_config(void) {
                 .med_temp_mc = 86000,
                 .high_temp_mc = 92000,
                 .max_temp_mc = 92000,
-                .pwm_idle = 32,
+                .pwm_idle = 0,
                 .pwm_low = 51,
                 .pwm_med = 128,
                 .pwm_high = 230,
                 .pwm_max = 255,
-                .idle_dither_min_pwm = 0,
-                .idle_dither_max_pwm = 160,
-                .idle_dither_period_seconds = 180,
-                .idle_dither_dwell_seconds = 30,
             },
         .verbose_logging = false,
     };
@@ -108,9 +93,6 @@ bool herofand_validate_config(const struct herofand_runtime_config *config) {
         return false;
     }
     if (config->downshift_delay_seconds < 0) {
-        return false;
-    }
-    if (config->gpu_idle_dither_index < -1) {
         return false;
     }
 

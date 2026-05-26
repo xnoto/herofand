@@ -30,26 +30,17 @@ int herofand_test_policy(void) {
     {
         struct herofand_channel_state idle_state;
         herofand_channel_state_init(&idle_state);
-        assert(idle_state.idle_entered_seconds == 0);
-        assert(idle_state.idle_dither_next_seconds == 0);
-        assert(idle_state.idle_pwm == -1);
 
         assert(herofand_channel_state_apply(&idle_state, 0, 500, 7, &applied_tier));
         assert(applied_tier == 0);
-        assert(idle_state.idle_entered_seconds == 500);
-        assert(idle_state.idle_pwm == -1);
-
-        idle_state.idle_pwm = 123;
-        idle_state.idle_dither_next_seconds = 555;
+        assert(idle_state.last_tier == 0);
 
         assert(herofand_channel_state_apply(&idle_state, 2, 600, 7, &applied_tier));
         assert(idle_state.last_tier == 2);
-        assert(idle_state.idle_pwm == -1);
-        assert(idle_state.idle_dither_next_seconds == 0);
 
         assert(!herofand_channel_state_apply(&idle_state, 0, 700, 7, &applied_tier));
         assert(herofand_channel_state_apply(&idle_state, 0, 707, 7, &applied_tier));
-        assert(idle_state.idle_entered_seconds == 707);
+        assert(idle_state.last_tier == 0);
     }
 
     return 0;
