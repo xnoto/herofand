@@ -38,6 +38,7 @@ These tools are not required to install or run the final package on `hero`.
 - `src/` - production sources
 - `include/` - public/internal headers shared across translation units
 - `tests/` - lightweight smoke tests
+- `systemd/` - `herofand.service` unit shipped with the package
 - `scripts/` - helper scripts used by local tooling and hooks
 
 ## Build
@@ -113,7 +114,7 @@ GitHub Actions is configured to validate against a RHEL 9-compatible userspace w
 
 - `CI` runs build, test, and pre-commit checks in a Rocky Linux 9 container as a RHEL 9-compatible CI environment.
 - `Release Please` watches conventional commits on `master`/`main`, opens a release PR, updates `VERSION`, updates `CHANGELOG.md`, and creates tags/releases.
-- `Release` builds a tarball artifact containing the `herofand` binary and the systemd unit.
+- `Release` builds an RPM (`herofand-X.Y.Z-1.el9.x86_64.rpm`) and a tarball artifact containing the `herofand` binary and the systemd unit. The RPM is the primary deployment artifact on `hero`.
 
 Release tags are expected to match `VERSION` and use the form `vX.Y.Z`.
 
@@ -134,10 +135,6 @@ Version increments are automated through `release-please`.
 ## Status
 
 This is an implementation-ready project with a working daemon core, build/test flow, and installable systemd unit.
-
-## Hero GPU fan resonance probe
-
-Earlier notes that identified GPU0/card0 as the noisy device were incorrect. The deployed default policy treats `card1`/GPU1 as the resonance suspect. GPU0 keeps a steady idle PWM while GPU1 randomly chooses an idle PWM between 0 and 160, holds it for a random 30-180 seconds, then chooses another value so the noisy speed band can be identified by ear. On `hero`, GPU1 maps to the second Radeon VII (`10:00.0`, `/sys/class/hwmon/hwmon1`).
 
 ## Versioning
 
