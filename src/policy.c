@@ -49,53 +49,38 @@ void herofand_channel_state_init(struct herofand_channel_state *state) {
     state->last_tier = -1;
     state->down_target = -1;
     state->down_since_seconds = 0;
-    state->idle_entered_seconds = 0;
-    state->idle_dither_next_seconds = 0;
-    state->idle_pwm = -1;
 }
 
 bool herofand_channel_state_apply(struct herofand_channel_state *state, int new_tier,
                                   long now_seconds, int downshift_delay_seconds,
                                   int *applied_tier) {
-    int prev_tier;
-    bool changed = false;
-
     if (state == NULL || applied_tier == NULL) {
         return false;
     }
-
-    prev_tier = state->last_tier;
 
     if (state->last_tier < 0 || new_tier > state->last_tier) {
         state->last_tier = new_tier;
         state->down_target = -1;
         state->down_since_seconds = 0;
         *applied_tier = new_tier;
-        changed = true;
-    } else if (new_tier < state->last_tier) {
+        return true;
+    }
+    if (new_tier < state->last_tier) {
         if (state->down_target != new_tier) {
             state->down_target = new_tier;
             state->down_since_seconds = now_seconds;
-        } else if ((now_seconds - state->down_since_seconds) >= downshift_delay_seconds) {
+            return false;
+        }
+        if ((now_seconds - state->down_since_seconds) >= downshift_delay_seconds) {
             state->last_tier = new_tier;
             state->down_target = -1;
             state->down_since_seconds = 0;
             *applied_tier = new_tier;
-            changed = true;
+            return true;
         }
-    } else {
-        state->down_target = -1;
-        state->down_since_seconds = 0;
+        return false;
     }
-
-    if (changed && state->last_tier == 0 && prev_tier != 0) {
-        state->idle_entered_seconds = now_seconds;
-        state->idle_dither_next_seconds = 0;
-        state->idle_pwm = -1;
-    } else if (changed && state->last_tier != 0) {
-        state->idle_dither_next_seconds = 0;
-        state->idle_pwm = -1;
-    }
-
-    return changed;
+    state->down_target = -1;
+    state->down_since_seconds = 0;
+    return false;
 }
