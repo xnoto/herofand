@@ -112,7 +112,7 @@ make dev-check
 
 GitHub Actions is configured to validate against a RHEL 9-compatible userspace while targeting the RHEL 9.2 deployment host:
 
-- `CI` runs build, test, and pre-commit checks in a Rocky Linux 9 container as a RHEL 9-compatible CI environment.
+- `CI` runs build, test, RPM, and pre-commit checks in the Red Hat UBI 9.2 container used by `.github/workflows/ci.yml`.
 - `Release Please` watches conventional commits on `master`/`main`, opens a release PR, updates `VERSION`, updates `CHANGELOG.md`, and creates tags/releases.
 - `Release` builds an RPM (`herofand-X.Y.Z-1.el9.x86_64.rpm`) and a tarball artifact containing the `herofand` binary and the systemd unit. The RPM is the primary deployment artifact on `hero`.
 
