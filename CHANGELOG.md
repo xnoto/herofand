@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.1](https://github.com/xnoto/herofand/compare/v0.7.0...v0.7.1) (2026-08-01)
+
+
+### Bug Fixes
+
+* align AWS MCP names ([#21](https://github.com/xnoto/herofand/issues/21)) ([e7babd0](https://github.com/xnoto/herofand/commit/e7babd08daa7629ee43fefd2a1f206de1bd68914))
+* route project MCPs through shared gateway ([#24](https://github.com/xnoto/herofand/issues/24)) ([d2983dc](https://github.com/xnoto/herofand/commit/d2983dc636bf0770a1f3f91335c451910957d6b8))
+
 ## [0.7.0](https://github.com/xnoto/herofand/compare/v0.6.0...v0.7.0) (2026-05-26)
 
 
