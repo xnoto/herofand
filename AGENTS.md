@@ -18,6 +18,9 @@ pre-commit run --all-files
 ```
 
 `make format` rewrites C sources. Recheck the diff after running it. Some `dev-check` tools are Fedora development dependencies and are not required on the RHEL-compatible runtime host.
+In particular, `make dev-check` requires `clang-tidy`; when it is unavailable,
+run the available narrow checks and `pre-commit run --all-files`, and rely on
+the required RHEL CI job for the complete toolchain validation.
 
 ## Hardware and service boundaries
 
